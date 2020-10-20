@@ -45,9 +45,21 @@ export default {
     }
   },
   mounted() {
-    fetch('http://www.nokeynoshade.party/api/queens')
+    let promiseArray = []
+    promiseArray.push(fetch('http://www.nokeynoshade.party/api/queens?limit=50'))
+    for (let i =51; i <= 201; i+=50){
+      let newFetch = fetch('http://www.nokeynoshade.party/api/queens?' + 'offset=' + i + '&limit=50')
+      promiseArray.push(newFetch)
+    }
+    // console.log('promises', promiseArray);
+    Promise.all(promiseArray)
     .then(response => response.json())
-    .then(queens => this.queens = queens)
+    .then(data => this.queens = data)
+    console.log("Queens:", this.queens);
+
+    // fetch('http://www.nokeynoshade.party/api/queens')
+    // .then(response => response.json())
+    // .then(queens => this.queens = queens)
 
     eventBus.$on('selected-queen', (queen) => {
       this.selectedSeasons = []
