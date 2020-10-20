@@ -45,21 +45,23 @@ export default {
     }
   },
   mounted() {
-    let promiseArray = []
-    promiseArray.push(fetch('http://www.nokeynoshade.party/api/queens?limit=50'))
+    let urls = []
+    urls.push('http://www.nokeynoshade.party/api/queens?limit=50');
     for (let i =51; i <= 201; i+=50){
-      let newFetch = fetch('http://www.nokeynoshade.party/api/queens?' + 'offset=' + i + '&limit=50')
-      promiseArray.push(newFetch)
+      let newUrl = 'http://www.nokeynoshade.party/api/queens?' + 'offset=' + i + '&limit=50';
+      urls.push(newUrl)
     }
-    // console.log('promises', promiseArray);
-    Promise.all(promiseArray)
-    .then(response => response.json())
-    .then(data => this.queens = data)
-    console.log("Queens:", this.queens);
+    console.log('urls', urls);
+    let requests = urls.map(url => fetch(url));
 
-    // fetch('http://www.nokeynoshade.party/api/queens')
-    // .then(response => response.json())
-    // .then(queens => this.queens = queens)
+
+  Promise.all(requests)
+  .then(responses => {
+    return responses;
+  })
+  .then(responses => Promise.all(responses.map(r => r.json())))
+  .then(parsedQueens => parsedQueens.forEach(parsedQueen => this.queens.push(parsedQueen)));
+
 
     eventBus.$on('selected-queen', (queen) => {
       this.selectedSeasons = []

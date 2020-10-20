@@ -3,7 +3,9 @@
       <h2>Let's take a look at the Queens</h2>
       <select v-on:change="handleSelection" v-model="selectedQueen">
           <option value="" disabled selected>Pick a queen...</option>
-          <option v-for="queen in queens" :value="queen">{{ queen.name }}</option>
+          <template v-for="queensArray in queens">
+          <option v-for="queen in queensArray" :value="queen">{{ queen.name }}</option>
+          </template>
       </select>
   </div>
 </template>
